@@ -2,24 +2,33 @@ const request = require('request');
 
 const missingLocale = 'locale is mandatory';
 const missingAffid = 'Affiliate ID (affid) is mandatory';
+const missingUserAgent = 'user_agent is mandatory';
+const missingUserIp = 'user_ip is mandatory';
 
 const careerjetUrl = 'http://public.api.careerjet.net/search?locale_code=';
 
 /**
  * [Careerjet description]
- * @param  {string} locale
- * @param  {string} affid / Affiliate ID provided by Careerjet. Requires to open a Careerjet partner account. http://www.careerjet.com/partners/
+ * @param  {object} config
+ * @param  {string} config.locale
+ * @param  {string} config.affid  Affiliate ID provided by Careerjet. Requires to open a Careerjet partner account. http://www.careerjet.com/partners/
+ * @param  {string} config.user_agent
+ * @param  {string} config.user_ip
  */
-module.exports = function (locale, affid) {
-  if (typeof locale !== 'string') throw missingLocale;
-  if (typeof affid !== 'string') throw missingAffid;
+module.exports = function (config) {
+  if (typeof config.locale !== 'string') throw missingLocale;
+  if (typeof config.affid !== 'string') throw missingAffid;
+  if (typeof config.user_agent !== 'string') throw missingUserAgent;
+  if (typeof config.user_ip !== 'string') throw missingUserIp;
 
-  const url = careerjetUrl + locale;
+  const url = careerjetUrl + config.locale;
 
   const query = {
     // The following parameter is mandatory:
-	  affid : affid, //  Affiliate ID provided by Careerjet. Requires to open a Careerjet partner account. http://www.careerjet.com/partners/
-    // keywords : '', //  Keywords to search in job offers. Example: 'java manager'. Default: none (Returns all offers from default country)
+	affid : config.affid, //  Affiliate ID provided by Careerjet. Requires to open a Careerjet partner account. http://www.careerjet.com/partners/
+	user_agent: config.user_agent,
+	user_ip: config.user_ip,
+	// keywords : '', //  Keywords to search in job offers. Example: 'java manager'. Default: none (Returns all offers from default country)
     // location : '', //  Location to search job offers in. Examples: 'London', 'Paris'. Default: none (Returns all offers from default country)
     sort : 'relevance', // Type of sort. Available values are 'relevance' (default), 'date', and 'salary'.
     start_num : 1, //  Num of first offer returned in entire result space should be >= 1 and <= Number of hits. Default: 1
